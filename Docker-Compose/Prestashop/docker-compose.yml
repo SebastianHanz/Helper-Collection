@@ -1,0 +1,42 @@
+version: '3'
+services:
+  mysql:
+    container_name: presta-mysql
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: prestashop
+    networks:
+      - prestashop_network
+    volumes:
+      - type: bind
+        source: /mnt/Docker/Prestashop/mysql # local path to the module
+        target: /var/lib/mysql # path to be mounted in the container
+  
+  prestashop:
+    container_name: prestashop
+    image: prestashop/prestashop:1.7
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 8050:80
+    environment:
+      - DB_SERVER=presta-mysql
+      - DB_NAME=prestashop
+      - DB_USER=root
+      - DB_PASSWD=${DB_PASSWD}
+      - PS_FOLDER_ADMIN=admin7650
+      - PS_FOLDER_INSTALL=install
+      - PS_LANGUAGE=de
+      - PS_COUNTRY=DE
+    networks:
+      - prestashop_network
+    volumes:
+      - type: bind
+        source: /mnt/Docker/Prestashop/html # local path to the module
+        target: /var/www/html # path to be mounted in the container
+
+networks:
+  prestashop_network:

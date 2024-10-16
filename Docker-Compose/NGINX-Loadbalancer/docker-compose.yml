@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  nginx-loadbalancer:
+    image: nginx:stable
+    container_name: nginx-loadbalancer
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+    networks:
+      host: {}
+
+networks:
+    host: {}

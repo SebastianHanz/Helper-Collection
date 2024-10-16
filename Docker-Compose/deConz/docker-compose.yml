@@ -1,0 +1,22 @@
+---
+services:
+    deconz:
+        image: 'deconzcommunity/deconz:stable'
+        container_name: deconz
+        restart: always
+        devices:
+            - /dev/ttyACM0
+        environment:
+            - DECONZ_VNC_PASSWORD=changeme
+            - DECONZ_VNC_PORT=5900
+            - TZ=Europe/Berlin
+            - DECONZ_VNC_MODE=1
+        volumes:
+            - './:/opt/deCONZ'
+            - '/etc/localtime:/etc/localtime:ro'
+        ports:
+            - '5900:5900'
+            - '443:443'
+            - '8075:80'
+
+#Raspberry Pi2 hat HOST-Netzwerk benutzt und in IoBroker waren Ports 80 und 443 angegeben!

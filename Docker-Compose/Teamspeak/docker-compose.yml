@@ -1,0 +1,38 @@
+---
+services:
+  teamspeak:
+    container_name: teamspeak
+    image: teamspeak:3.13
+    restart: always
+    depends_on:
+      - db 
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
+    volumes:
+       - ./server:/var/ts3server/
+    environment:
+      - TS3SERVER_DB_PLUGIN= ts3db_mariadb
+      - TS3SERVER_DB_SQLCREATEPATH=create_mariadb
+      - TS3SERVER_DB_HOST=db
+      - TS3SERVER_DB_USER=teamspeak
+      - TS3SERVER_DB_PASSWORD=${TS3SERVER_DB_PASSWORD}
+      - TS3SERVER_DB_NAME=teamspeak
+      - TS3SERVER_DB_WAITUNTILREADY=30
+      - TS3SERVER_LICENSE=accept
+  db:
+    container_name: teamspeak-mariadb
+    image: linuxserver/mariadb:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=teamspeak
+      - MYSQL_USER=teamspeak
+      - PGID=1000
+      - PUID=1000
+    ports:
+      - 3307:3306/udp
+    volumes:
+      - ./db/:/config

@@ -1,0 +1,54 @@
+# Berechtigungen der Ordner müssen zum verwendeten User passen -> im Beispiel rekursiv /opt/ioBroker mit 1000:1000
+# Befehl: chown 1000:1000 -R /opt/ioBroker
+
+# Damit ioBroker mit Redis arbeiten kann, muss zuvor eine reguläre ioBroker-Instanz mit jsonl-Datenbank angelegt werden.
+# Wenn der ioBroker dann eingerichtet ist, kann mit dem Umstieg auf Redis begonnen werden.
+# 
+# 1. Dieses Docker-Compose-File ausführen (ioBroker-Standard-Installation + neue Redis-Instanz)
+# 2. Wenn ioBroker vollständig hochgefahren ist, diesen über die Container-CLI beenden -> 'docker exec -it iobroker bash' -> 'pkill -u iobroker'
+# 3. 'iob setup custom' ausführen und die Schritte mit den Standardeinstellungen für Redis durchlaufen -> r=Redis | IP=127.0.0.1 | Port=6379 | Master/Slave, je nach bestehendem Setup, idr. Master
+# 4. Nach erfolgreichem Import der jsonl nach Redis, mit 'docker-compose down' die container beenden und danach das Dokcer-Compose-File im Ordner iobroker+Redis starten
+# 5. Fertig!
+
+---
+services:
+  iobroker:
+    container_name: iobroker
+    image: buanet/iobroker:latest-v10
+    hostname: Proxmox
+    restart: always
+    network_mode: "host"
+    environment:
+        - USBDEVICES=
+        - TZ=Europe/Berlin
+        - ZWAVE=false
+        - AVAHI=false
+        - IOB_STATESDB_TYPE=jsonl
+        - IOB_STATESDB_PORT=9000
+        - IOB_STATESDB_HOST=0.0.0.0
+        - IOB_OBJECTSDB_TYPE=jsonl
+        - IOB_OBJECTSDB_PORT=9001
+        - IOB_OBJECTSDB_HOST=0.0.0.0
+        - IOB_STATESDB_PASS= #leave this empty
+        - IOB_MULTIHOST=master
+        - IOB_ADMINPORT=8081
+        - SETGID=1000
+        - SETUID=1000
+    volumes:
+        - './:/opt/iobroker:rw'
+
+
+  redis:
+      image: 'bitnami/redis:7.2.4' # latest-tag is not recommended because existing redis-db is not automatically upgradable with image update -> Redis will stop -> Upgrade container manually after db dump and restore afterwards.
+      network_mode: "host"
+      restart: always
+      volumes:
+          - './iobroker-data/redis:/bitnami'
+          - './iobroker-data/redis/redis.conf:/opt/bitnami/redis/etc/redis.conf' #Testing for better performance
+      environment:
+          - REDIS_IO_THREADS_DO_READS=yes
+          - REDIS_IO_THREADS=4
+          - REDIS_PASSWORD=
+          - ALLOW_EMPTY_PASSWORD=yes
+      container_name: redis-server
+      user: '1000'

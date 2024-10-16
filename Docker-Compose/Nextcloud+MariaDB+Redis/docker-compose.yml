@@ -1,0 +1,69 @@
+---
+services:
+
+#Nextcloud-Server
+  nextcloud:  
+    image: "linuxserver/nextcloud:29.0.7" # von 29.0.6
+    container_name: "nextcloud"    
+    restart: "unless-stopped"
+    hostname: "HanzNAS"
+    ports:
+      - "444:443/tcp"
+      - "82:80/tcp"
+    environment:
+      - "PGID=1000"
+      - "PUID=1000"
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=user1
+      - MYSQL_HOST=nextcloud-mariadb
+      - REDIS_HOST=redis-server
+      - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD}
+      - "TZ=Europe/Berlin"
+      - "PHP_MEMORY_LIMIT=1024M"
+    volumes:
+      - "./nextcloud-config:/config"
+      - "/mnt/NextcloudData:/data"
+    depends_on:
+      - nextcloud-mariadb
+      - redis-server
+
+# MariaDB
+  nextcloud-mariadb:
+    image: "ghcr.io/linuxserver/mariadb:10.11.8"
+    container_name: "nextcloud-mariadb"
+    restart: "unless-stopped"
+    ports:
+      - "3306:3306/tcp"
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=user1
+      - MYSQL_DATABASE=nextcloud
+      - TZ=Europe/Berlin
+    volumes:
+      - "./nextcloud-mariadb:/config"
+
+# Redis-Server
+  redis-server:  
+    image: "bitnami/redis:7.2.5"
+    container_name: "redis-server"
+    restart: "always"
+    command:
+      - "/opt/bitnami/scripts/redis/run.sh"
+    entrypoint:
+      - "/opt/bitnami/scripts/redis/entrypoint.sh"
+    environment:
+      - TZ=Europe/Berlin
+      - ALLOW_EMPTY_PASSWORD=no
+      - REDIS_PASSWORD=${REDIS_HOST_PASSWORD}
+      - REDIS_IO_THREADS=4
+      - REDIS_IO_THREADS_DO_READS=yes
+      - BITNAMI_APP_NAME=redis
+    user: "1000"        
+    volumes:
+      - "./redis/redis.conf:/opt/bitnami/redis/etc/redis.conf"
+      - "./redis:/bitnami"

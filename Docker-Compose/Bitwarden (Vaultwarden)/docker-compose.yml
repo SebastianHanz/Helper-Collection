@@ -1,0 +1,13 @@
+---
+services:
+  bitwarden:
+    container_name: bitwarden
+    image: vaultwarden/server:latest
+    restart: always
+    ports:
+      - 180:80
+    environment:
+      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}
+    volumes:
+      - '${BITWARDEN_DATA}:/data:rw'
+      - '${BITWARDEN_CUSTOM_BANNER}:/web-vault/images/logo-dark@2x.png:ro'

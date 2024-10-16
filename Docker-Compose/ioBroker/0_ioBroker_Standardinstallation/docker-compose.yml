@@ -1,0 +1,25 @@
+---
+services:
+  iobroker:
+    container_name: iobroker
+    image: buanet/iobroker:latest-v10
+    hostname: Proxmox
+    restart: always
+    network_mode: "host"
+    environment:
+      - USBDEVICES=
+      - TZ=Europe/Berlin
+      - ZWAVE=false
+      - AVAHI=false
+      - IOB_STATESDB_TYPE=jsonl
+      - IOB_STATESDB_PORT=9000
+      - IOB_STATESDB_HOST=0.0.0.0
+      - IOB_OBJECTSDB_TYPE=jsonl
+      - IOB_OBJECTSDB_PORT=9001
+      - IOB_OBJECTSDB_HOST=0.0.0.0
+      - IOB_MULTIHOST=master
+      - IOB_ADMINPORT=8081
+      - SETGID=1000
+      - SETUID=1000
+    volumes:
+      - './:/opt/iobroker:rw'

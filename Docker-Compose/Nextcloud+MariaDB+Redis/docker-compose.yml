@@ -3,7 +3,7 @@ services:
 
 #Nextcloud-Server
   nextcloud:  
-    image: "linuxserver/nextcloud:29.0.7" # von 29.0.6
+    image: "linuxserver/nextcloud:30.0.1" # von 29.0.7
     container_name: "nextcloud"    
     restart: "unless-stopped"
     hostname: "HanzNAS"

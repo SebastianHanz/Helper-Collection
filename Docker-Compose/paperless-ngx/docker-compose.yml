@@ -1,0 +1,50 @@
+services:
+  broker:
+    image: docker.io/library/redis:7
+    restart: always
+    volumes:
+      - ./redisdata:/data
+
+  db:
+    image: mariadb:11 #von 10
+    restart: always
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    env_file: docker-compose.env
+    environment:
+      - MARIADB_HOST= paperless
+      - MARIADB_DATABASE= paperless
+      - MARIADB_USER= paperless
+      - MARIADB_PASSWORD= ${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD= ${MARIADB_ROOT_PASSWORD}
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.13.2 #von 2.11 
+    restart: always
+    depends_on:
+      - db
+      - broker
+    ports:
+      - "9090:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./data:/usr/src/paperless/data
+      - ./media:/usr/src/paperless/media
+      - ./export:/usr/src/paperless/export
+      - ./consume:/usr/src/paperless/consume
+    env_file: docker-compose.env
+    environment:
+      - PAPERLESS_REDIS=redis://broker:6379
+      - PAPERLESS_DBENGINE=mariadb
+      - PAPERLESS_DBHOST=db
+      - PAPERLESS_DBUSER=paperless 
+      - PAPERLESS_DBPASS=${MARIADB_PASSWORD} 
+      - PAPERLESS_DBPORT=3306
+      - PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect # optional for allauth
+      - PAPERLESS_SOCIALACCOUNT_PROVIDERS=${PAPERLESS_SOCIALACCOUNT_PROVIDERS} # optional for allauth
+
+

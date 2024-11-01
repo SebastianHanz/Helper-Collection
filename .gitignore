@@ -1,2 +1,2 @@
 .env
-/Docker-Compose/Paperless-NGX
+docker-compose.env

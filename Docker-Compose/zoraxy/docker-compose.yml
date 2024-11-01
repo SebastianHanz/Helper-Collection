@@ -1,0 +1,18 @@
+# https://github.com/tobychui/zoraxy/tree/main/docker
+services:
+  zoraxy:
+    image: zoraxydocker/zoraxy:latest
+    container_name: zoraxy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+      - 8000:8000
+    volumes:
+      - ./config/:/opt/zoraxy/config/
+      #- ./zerotier/config/:/var/lib/zerotier-one/
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime
+    environment:
+      FASTGEOIP: "true"
+      ZEROTIER: "false"

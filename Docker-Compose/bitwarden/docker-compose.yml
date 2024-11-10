@@ -2,12 +2,13 @@
 services:
   bitwarden:
     container_name: bitwarden
-    image: vaultwarden/server:latest
+    image: vaultwarden/server:1.32.3 # von 1.31.0
+    hostname: ${HOSTNAME}
     restart: always
     ports:
       - 180:80
     environment:
-      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}
+      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN} #Im Argon2-Format
     volumes:
-      - '${BITWARDEN_DATA}:/data:rw'
-      - '${BITWARDEN_CUSTOM_BANNER}:/web-vault/images/logo-dark@2x.png:ro'
+      - './:/data:rw'
+      - './custom/bitwarden_banner.png:/web-vault/images/logo-dark@2x.png' #Custom Logo

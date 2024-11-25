@@ -8,6 +8,7 @@ services:
   iobroker:
     container_name: iobroker
     image: buanet/iobroker:latest-v10
+    hostname: Proxmox
     restart: always
     network_mode: "host"
     environment:
@@ -33,7 +34,7 @@ services:
       - redis
  
   redis:
-      image: 'bitnami/redis:7.2.4'
+      image: 'bitnami/redis:7.4'
       network_mode: "host"
       restart: always
       volumes:
@@ -46,4 +47,3 @@ services:
           - ALLOW_EMPTY_PASSWORD=yes
       container_name: redis-server
       user: '1000'
-

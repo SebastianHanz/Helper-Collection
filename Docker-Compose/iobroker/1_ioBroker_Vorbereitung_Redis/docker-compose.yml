@@ -39,7 +39,7 @@ services:
 
 
   redis:
-      image: 'bitnami/redis:7.2.4' # latest-tag is not recommended because existing redis-db is not automatically upgradable with image update -> Redis will stop -> Upgrade container manually after db dump and restore afterwards.
+      image: 'bitnami/redis:7.4' # latest-tag is not recommended because existing redis-db is not automatically upgradable with image update -> Redis will stop -> Upgrade container manually after db dump and restore afterwards.
       network_mode: "host"
       restart: always
       volumes:

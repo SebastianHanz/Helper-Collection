@@ -2,7 +2,7 @@
 services:
   bitwarden:
     container_name: bitwarden
-    image: vaultwarden/server:1.32.3 # von 1.31.0
+    image: vaultwarden/server:1.32.7 # von 1.32.3
     hostname: ${HOSTNAME}
     restart: always
     ports:

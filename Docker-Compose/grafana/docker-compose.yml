@@ -1,7 +1,7 @@
 ---
 services:
   grafana:
-    image: grafana/grafana:10.4.1
+    image: grafana/grafana:11.4.0
     container_name: grafana
     restart: always
     user: 'root' 
@@ -13,17 +13,3 @@ services:
     environment:
       TZ: "Europe/Berlin"
       GF_ROOT_URL: https://grafana.sebastianhanz.de/
-      #GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP: "true"
-      #GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
-      #GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
-      #GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "xL9wYB6s2zOgSCqDyhGsoRkDx9pZoY5oUMmzErgF"
-      #GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "McXRxDU7s5F42UywTNex0UasCjhx3Nlm7mRPWKsNpc1jNJYpvb4zvbCan6bsRI2cdFMqqHfCLGccAzS2MYE3SCyqFWsOdk5bOpeIxJuIP2W3C9su8GIL4pY9Iu21Qgkk"
-      #GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
-      #GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://auth.sebastianhanz.de/application/o/authorize/"
-      #GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://auth.sebastianhanz.de/application/o/token/"
-      #GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.sebastianhanz.de/application/o/userinfo/"
-      #GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.sebastianhanz.de/application/o/grafana-hetzner/end-session/"
-      ## Optionally enable auto-login (bypasses Grafana login screen)
-      #GF_AUTH_OAUTH_AUTO_LOGIN: "false"
-      ## Optionally map user groups to Grafana roles
-      ##GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
